@@ -26,6 +26,9 @@ yarn-error.log*
 .env*.local
 .env
 
+# source photos (copies live in public/)
+Jane 800816933/
+
 # vercel
 .vercel
 
