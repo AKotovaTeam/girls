@@ -1,0 +1,37 @@
+{
+  "name": "girls-platform",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:migrate": "node scripts/migrate.js",
+    "supabase": "supabase",
+    "supabase:link": "supabase link --project-ref tgeeuqmzxynkqudoihjv",
+    "supabase:push": "supabase db push",
+    "share": "node scripts/share-with-colleagues.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.108.1",
+    "cookie": "^0.6.0",
+    "nanoid": "^5.0.0",
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/cookie": "^0.6.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.0",
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.0",
+    "postcss": "^8.4.0",
+    "supabase": "^2.105.0",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5.0.0"
+  }
+}
