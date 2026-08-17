@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sign in</title>
+  <style>
+    body { font-family: system-ui, sans-serif; min-height: 100vh; display: grid; place-items: center;
+      background: linear-gradient(135deg, #fff1f2, #fdf2f8); margin: 0; }
+    .card { background: #fff; padding: 2rem; border-radius: 1rem; max-width: 22rem; text-align: center;
+      box-shadow: 0 10px 40px rgba(0,0,0,.08); }
+    a.btn { display: inline-block; margin-top: 1.25rem; padding: .85rem 1.75rem; border-radius: 999px;
+      background: linear-gradient(90deg, #fb7185, #ec4899); color: #fff; text-decoration: none; font-weight: 500; }
+    .err { color: #b91c1c; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 style="font-weight:400;margin:0 0 .5rem">Sign in to Jane</h1>
+    <p id="msg" style="color:#666;font-size:.95rem">Tap Continue to open the app. Opening this page alone does not use up your link.</p>
+    <a class="btn" id="go" href="#">Continue</a>
+  </div>
+  <script>
+    const token = new URLSearchParams(location.search).get('token');
+    const go = document.getElementById('go');
+    const msg = document.getElementById('msg');
+    if (!token) {
+      msg.className = 'err';
+      msg.textContent = 'Missing token. Ask for a new link.';
+      go.style.display = 'none';
+    } else {
+      go.href = 'https://girls-akotovateams-projects.vercel.app/api/auth/callback?token=' + encodeURIComponent(token);
+    }
+  </script>
+</body>
+</html>
