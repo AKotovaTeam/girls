@@ -25,5 +25,7 @@ export function getAppBaseUrl(creatorDomain: string): string {
 }
 
 export function buildMagicLink(creatorDomain: string, token: string): string {
-  return `${getAppBaseUrl(creatorDomain)}/api/auth/callback?token=${token}`
+  // Use /auth/callback (confirm page), not /api/auth/callback.
+  // Messengers preview GET links and would burn one-time tokens instantly.
+  return `${getAppBaseUrl(creatorDomain)}/auth/callback?token=${token}`
 }
