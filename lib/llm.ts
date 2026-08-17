@@ -79,28 +79,40 @@ REMEMBER:
   // Try Groq first (free, fast)
   const groqKey = process.env.GROQ_API_KEY
   if (groqKey) {
-    try {
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${groqKey}`,
-        },
-        body: JSON.stringify({
-          model: 'llama-3.1-8b-instant', // Fast and free
-          messages: messages,
-          max_tokens: 100, // Short messages like real texting
-          temperature: 0.9, // Higher temperature for more personality
-        }),
-      })
-      
-      if (response.ok) {
-        const data = await response.json()
-        const assistantMessage = data.choices[0]?.message?.content || 'Thanks for your message! 💕'
-        return { message: assistantMessage }
+    // Prefer current Groq models; old ids like llama-3.1-8b-instant were removed
+    const groqModels = [
+      process.env.GROQ_MODEL,
+      'openai/gpt-oss-20b',
+      'groq/compound-mini',
+    ].filter((m): m is string => Boolean(m))
+
+    for (const model of groqModels) {
+      try {
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${groqKey}`,
+          },
+          body: JSON.stringify({
+            model,
+            messages: messages,
+            max_tokens: 100, // Short messages like real texting
+            temperature: 0.9, // Higher temperature for more personality
+          }),
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+          const assistantMessage = data.choices[0]?.message?.content || 'Thanks for your message! 💕'
+          return { message: assistantMessage.trim() }
+        }
+
+        const errBody = await response.text()
+        console.error(`Groq API ${response.status} (${model}):`, errBody.slice(0, 300))
+      } catch (error) {
+        console.error(`Groq API error (${model}):`, error)
       }
-    } catch (error) {
-      console.error('Groq API error:', error)
     }
   }
   
