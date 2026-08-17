@@ -79,7 +79,9 @@ REMEMBER:
   // Try Groq first (free, fast)
   const groqKey = process.env.GROQ_API_KEY
   if (groqKey) {
-    // Prefer current Groq models; old ids like llama-3.1-8b-instant were removed
+    // Prefer current Groq models; old ids like llama-3.1-8b-instant were removed.
+    // gpt-oss models spend tokens on hidden reasoning — use reasoning_effort: low
+    // and skip empty content so we don't return the generic fallback.
     const groqModels = [
       process.env.GROQ_MODEL,
       'openai/gpt-oss-20b',
@@ -88,24 +90,33 @@ REMEMBER:
 
     for (const model of groqModels) {
       try {
+        const body: Record<string, unknown> = {
+          model,
+          messages,
+          max_tokens: 150, // Short texts; leave room if model reasons first
+          temperature: 0.9,
+        }
+        if (model.includes('gpt-oss')) {
+          body.reasoning_effort = 'low'
+        }
+
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${groqKey}`,
           },
-          body: JSON.stringify({
-            model,
-            messages: messages,
-            max_tokens: 100, // Short messages like real texting
-            temperature: 0.9, // Higher temperature for more personality
-          }),
+          body: JSON.stringify(body),
         })
 
         if (response.ok) {
           const data = await response.json()
-          const assistantMessage = data.choices[0]?.message?.content || 'Thanks for your message! 💕'
-          return { message: assistantMessage.trim() }
+          const assistantMessage = (data.choices[0]?.message?.content || '').trim()
+          if (assistantMessage) {
+            return { message: assistantMessage }
+          }
+          console.error(`Groq returned empty content (${model}), trying next model`)
+          continue
         }
 
         const errBody = await response.text()
