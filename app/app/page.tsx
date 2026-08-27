@@ -10,9 +10,6 @@ import { memo } from 'react'
 
 // Constants
 const AVATAR_SRC = '/jane-landing/0862341e72f81bd62eb70d28b8e394c6fa9279930b2d8271fdc3ab3ff3a98fda7cde223d.jpg'
-const BLUR_FILTER = 'blur(40px) brightness(0.5)'
-const BLUR_SCALE = 'scale(1.1)'
-
 // Format date helper (memoized)
 const formatDate = (date: string | null | undefined): string => {
   if (!date) return ''
@@ -93,12 +90,12 @@ const BlurredImage = memo(function BlurredImage({
   priority?: boolean
 }) {
   return (
-    <div className="absolute inset-0" style={{ filter: BLUR_FILTER, transform: BLUR_SCALE }}>
+    <div className="absolute inset-0 overflow-hidden">
       <Image
         src={src}
         alt={alt}
         fill
-        className="object-cover"
+        className="object-cover scale-110 blur-[40px] brightness-50"
         sizes={sizes}
         unoptimized
         priority={priority}
