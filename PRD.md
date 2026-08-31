@@ -134,7 +134,7 @@ White-label персональный сайт креатора. Пользова
 - Невалидный email / слабый password → inline validation
 - Confirm может истечь / не сработать — account в MVP не блокируем
 
-**Acceptance:** Форма Register; создание account; session; confirmation email; продукт доступен без confirmed email
+**Acceptance:** Форма Register; checkbox Terms required; создание account; session; confirmation email; продукт доступен без confirmed email
 
 ---
 
