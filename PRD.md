@@ -6,7 +6,7 @@
 | **Аудитория** | Product, Tech — оценка и планирование MVP |
 | **Scope** | Только end-user (подписчик) на домене креатора |
 | **Out of scope** | Creator cabinet, Platform Admin, Creator API |
-| **Версия** | 1.0 |
+| **Версия** | 1.1 |
 | **Статус** | Draft for estimation |
 
 ---
@@ -45,6 +45,7 @@
 - Manage / Cancel subscription
 - Terms & Conditions + согласие при Register
 - Contact (mailto)
+- **Notifier:** email + in-app (unread) при новых событиях
 
 *Ниже — детальная спецификация для оценки.*
 
@@ -63,6 +64,7 @@ White-label персональный сайт креатора. Пользова
 - Ответы в чате — от человека (или его инструментов); платформа **не** отвечает AI от имени креатора
 - Auth: email + password; email confirmation есть, но **optional / non-blocking** в MVP
 - Terms & Conditions: публичная страница; обязательное согласие при Register
+- **Notifier:** уведомления пользователю (email + in-app unread); отдельной страницы Notifications в MVP нет
 - Payment: через платёжного провайдера (конкретный провайдер — TBD), не привязка к одной брендовой платежке в тексте требований
 
 ---
@@ -445,6 +447,38 @@ White-label персональный сайт креатора. Пользова
 
 - Header: Feed, Messages, Credits
 - Unread badge на Messages, если есть непрочитанные от креатора
+- Badge — часть **Notifier** (in-app канал)
+
+### 4.2a Notifier
+
+**Goal:** Сообщить подписчику о важных событиях, даже если он не в чате.
+
+**Каналы (MVP):**
+
+| Channel | Что видит пользователь |
+|---------|------------------------|
+| **In-app** | Unread badge на Messages в Header |
+| **Email** | Письмо на email аккаунта со ссылкой в Conversation / Billing |
+
+**Out of MVP:** Web Push / mobile push; отдельная страница `/notifications`; SMS.
+
+**События → уведомление:**
+
+| Event | In-app | Email |
+|-------|--------|-------|
+| Новое сообщение от креатора (text / photo) | Да (badge) | Да |
+| Subscription успешно оформлена / продлена | — | Да (confirmation) |
+| Payment chat pack успешен | — | Да (confirmation) |
+| Subscription отменена / истекла / payment failed | — | Да |
+
+**Rules:**
+
+- Email Notifier → на email аккаунта (в MVP шлём и без confirmed email)
+- Письмо о новом сообщении: краткий смысл + CTA в `/messages/[id]` (через Login, если нет session)
+- Opt-out настроек в продукте нет в MVP; в письме — стандартный unsubscribe (желательно)
+- Default: **одно письмо на каждое** новое сообщение от креатора (digest — TBD)
+
+**Acceptance:** Ответ креатора → email + badge; payment/subscription emails уходят; ссылки ведут в продукт
 
 ### 4.3 Paywall consistency
 
@@ -483,6 +517,7 @@ White-label персональный сайт креатора. Пользова
 | **F10** | Footer → Contact → mailto support |
 | **F11** | Footer / Register → Terms & Conditions → прочтение `/terms` |
 | **F12** | Register → обязательный agree to Terms → Create account |
+| **F13** | Креатор ответил → Notifier: email + unread badge → пользователь открывает Messages |
 
 ---
 
@@ -509,6 +544,8 @@ White-label персональный сайт креатора. Пользова
 | R16 | Contact = mailto only (без ticket system) |
 | R17 | Публичная страница Terms & Conditions `/terms` |
 | R18 | Register требует явного согласия с Terms (checkbox + ссылка) |
+| R19 | Notifier: новое сообщение от креатора → in-app unread + email |
+| R20 | Notifier: email при успешных/неуспешных payment и смене статуса subscription |
 
 ---
 
@@ -539,6 +576,7 @@ White-label персональный сайт креатора. Пользова
 - Billing: status, credits, покупка chat packs
 - Messages: 1:1 text, credit spend, paid photo unlock
 - Unread badge
+- **Notifier** (email + in-app) на сообщения креатора и payment/subscription события
 - Contact + footer
 - Terms & Conditions `/terms` + согласие при Register
 
@@ -554,6 +592,9 @@ White-label персональный сайт креатора. Пользова
 - Likes / comments в Feed
 - Upload медиа пользователем в чат (только text)
 - AI auto-replies в чате у пользователя
+- Web Push / mobile push / SMS
+- Отдельная страница `/notifications`
+- Настройки opt-in/opt-out уведомлений в UI
 
 ---
 
@@ -569,11 +610,13 @@ White-label персональный сайт креатора. Пользова
 - [ ] Soft banner «confirm your email» — в MVP или later  
 - [ ] Финальный legal-текст Terms & Conditions (+ Privacy Policy отдельно — если нужна, TBD)  
 - [ ] Нужна ли повторная фиксация согласия с Terms при Subscribe (в MVP достаточно при Register)  
+- [ ] Notifier: preview текста в email о сообщении — да/нет; digest vs per-message  
+- [ ] Notifier: слать ли email, если пользователь уже в открытом чате  
 
 ---
 
 ## 10. Definition of Done (user MVP)
 
-Гость на валидном домене креатора может: зарегистрироваться (email + password), залогиниться, опционально подтвердить email позже без блокировок, оформить один subscription plan через payment provider, видеть premium в Feed, писать в Messages с учётом credits, докупать chat packs, unlock paid photos в чате, видеть корректные balances и статус subscription, управлять / отменять подписку через flow провайдера, ознакомиться с Terms & Conditions, принять их при Register и связаться с поддержкой по email.
+Гость на валидном домене креатора может: зарегистрироваться (email + password), залогиниться, опционально подтвердить email позже без блокировок, оформить один subscription plan через payment provider, видеть premium в Feed, писать в Messages с учётом credits, докупать chat packs, unlock paid photos в чате, видеть корректные balances и статус subscription, управлять / отменять подписку через flow провайдера, получать **Notifier** (email + unread) на ответы креатора и ключевые payment-события, ознакомиться с Terms & Conditions, принять их при Register и связаться с поддержкой по email.
 
 **В этот документ и эту оценку не входят** Creator cabinet и Platform Admin.
