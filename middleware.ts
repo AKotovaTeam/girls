@@ -16,7 +16,16 @@ export async function middleware(request: NextRequest) {
   
   // Creator routes - must resolve to a valid creator
   // Skip auth callback and public routes
-  const publicRoutes = ['/auth/callback', '/login', '/subscribe', '/']
+  const publicRoutes = [
+    '/auth/callback',
+    '/auth/confirm',
+    '/login',
+    '/register',
+    '/subscribe',
+    '/contact',
+    '/terms',
+    '/',
+  ]
   const isPublicRoute = publicRoutes.some(route => pathname === route || pathname.startsWith(route))
   
   if (!isPublicRoute) {

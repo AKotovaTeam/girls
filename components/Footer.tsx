@@ -16,12 +16,20 @@ export async function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-4 sm:py-6">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-600 font-light">
           <p>© {new Date().getFullYear()} {creator?.display_name || 'Platform'}</p>
-          <Link
-            href="/contact"
-            className="text-gray-600 hover:text-rose-600 transition-colors"
-          >
-            Contact & feedback
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+            <Link
+              href="/terms"
+              className="text-gray-600 hover:text-rose-600 transition-colors"
+            >
+              Terms & Conditions
+            </Link>
+            <Link
+              href="/contact"
+              className="text-gray-600 hover:text-rose-600 transition-colors"
+            >
+              Contact & feedback
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

@@ -23,6 +23,7 @@ White-label персональный сайт креатора. Пользова
 - Без in-app moderation; обратная связь через Contact + email
 - Ответы в чате — от человека (или его инструментов); платформа **не** отвечает AI от имени креатора
 - Auth: email + password; email confirmation есть, но **optional / non-blocking** в MVP
+- Terms & Conditions: публичная страница; обязательное согласие при Register
 - Payment: через платёжного провайдера (конкретный провайдер — TBD), не привязка к одной брендовой платежке в тексте требований
 
 ---
@@ -55,12 +56,13 @@ White-label персональный сайт креатора. Пользова
 | `/messages/[id]` | Да | Conversation thread |
 | `/billing` | Да | Subscription + message credits + покупка packs |
 | `/contact` | Нет | Complaints & suggestions (email) |
+| `/terms` | Нет | Terms & Conditions |
 
 ### Global chrome
 
 - **Header:** brand → у guest на `/`; у logged-in на `/feed` (не на Landing)
 - У logged-in: Feed / Messages (+ unread badge) / Credits; email; Log out
-- **Footer:** Contact & feedback → `/contact`
+- **Footer:** Contact & feedback → `/contact`; Terms & Conditions → `/terms`
 
 ### Access rule
 
@@ -91,7 +93,7 @@ White-label персональный сайт креатора. Пользова
 **User can:**
 
 - Перейти на `/login` или `/register`
-- Открыть Contact из footer
+- Открыть Contact или Terms & Conditions из footer
 - Снова увидеть Landing только после Log out
 
 **Empty / error:** Неизвестный domain → 404
@@ -111,6 +113,7 @@ White-label персональный сайт креатора. Пользова
 - Submit / **Create account**
 - Ссылка на Login
 - Короткая пометка, что уйдёт confirmation email (подтверждать необязательно)
+- Checkbox **I agree to the Terms & Conditions** + ссылка на `/terms` (обязателен для Submit)
 
 **User can:**
 
@@ -121,6 +124,7 @@ White-label персональный сайт креатора. Пользова
 
 - Email уникален на сайте (один account на email)
 - Password: min length (например 8+); базовые validation errors
+- Без принятых Terms & Conditions Register не завершается (checkbox required)
 - **Email confirmation optional в MVP:** unverified пользователь может Login, Subscribe, Feed, Messages — без hard block
 - Soft UX (nice-to-have): banner «Please confirm your email» + Resend
 
@@ -198,6 +202,7 @@ White-label персональный сайт креатора. Пользова
   - Direct messages с креатором
   - Cancel anytime
 - Primary CTA: **Subscribe** (оплата через payment provider)
+- Ссылка на Terms & Conditions (`/terms`) рядом с оплатой (пользователь может перечитать перед pay)
 - Назад в Feed (для logged-in; guests до оплаты уходят в Login / Register)
 
 **User can:**
@@ -360,6 +365,35 @@ White-label персональный сайт креатора. Пользова
 
 ---
 
+### 3.11 Terms & Conditions `/terms`
+
+**Goal:** Юридические условия использования продукта (публичная страница).
+
+**Access:** Публично на валидном домене креатора (guest и logged-in). Ссылка всегда в Footer.
+
+**User sees:**
+
+- Заголовок **Terms & Conditions**
+- Актуальный текст условий (platform-level; один документ для продукта)
+- Дата последнего обновления (Last updated)
+- Ссылка назад (guest → Landing `/`; logged-in → `/feed`)
+
+**User can:**
+
+- Прочитать Terms в любой момент
+- Открыть из Footer
+- При Register — перейти по ссылке на Terms (см. Register)
+
+**Rules:**
+
+- Текст Terms хранится / публикуется платформой (контент TBD legal)
+- В MVP: статичная страница с утверждённым текстом (без CMS, если не требуется)
+- При существенном обновлении Terms — обновить дату **Last updated** на странице
+
+**Acceptance:** Публичная `/terms`; ссылка в Footer; читаемый текст; Last updated; доступна без Login
+
+---
+
 ## 4. Cross-cutting functionality
 
 ### 4.1 Session & logout
@@ -386,10 +420,11 @@ White-label персональный сайт креатора. Пользова
 - Цена / currency как на Subscribe / Billing (fixed платформой)
 - Пользователь не настраивает pricing
 
-### 4.5 Support
+### 4.5 Support & legal
 
 - Нет report-кнопок на posts/messages в MVP
-- Только Contact email
+- Contact email для жалоб / предложений
+- Terms & Conditions — публичная страница `/terms`; принятие при Register
 
 ---
 
@@ -407,6 +442,8 @@ White-label персональный сайт креатора. Пользова
 | **F8** | Paid photo → Unlock → −N credits → полное фото; повторно без списания |
 | **F9** | Billing → Manage / Cancel (payment provider) → статус обновляется; premium может закрыться по статусу подписки |
 | **F10** | Footer → Contact → mailto support |
+| **F11** | Footer / Register → Terms & Conditions → прочтение `/terms` |
+| **F12** | Register → обязательный agree to Terms → Create account |
 
 ---
 
@@ -431,6 +468,8 @@ White-label персональный сайт креатора. Пользова
 | R14 | Одна conversation на user–creator |
 | R15 | Unknown host → 404 |
 | R16 | Contact = mailto only (без ticket system) |
+| R17 | Публичная страница Terms & Conditions `/terms` |
+| R18 | Register требует явного согласия с Terms (checkbox + ссылка) |
 
 ---
 
@@ -438,7 +477,7 @@ White-label персональный сайт креатора. Пользова
 
 | Screen | States |
 |--------|--------|
-| Register | Empty, validation, email taken, success + session, soft fail отправки confirm |
+| Register | Empty, validation, email taken, Terms not accepted, success + session, soft fail отправки confirm |
 | Login | Empty, validation, wrong credentials, success, return URL |
 | Confirm email | Success, invalid, expired, already confirmed |
 | Subscribe | Guest redirect, ready, checkout redirect, cancelled return |
@@ -462,6 +501,7 @@ White-label персональный сайт креатора. Пользова
 - Messages: 1:1 text, credit spend, paid photo unlock
 - Unread badge
 - Contact + footer
+- Terms & Conditions `/terms` + согласие при Register
 
 ### Out
 
@@ -488,11 +528,13 @@ White-label персональный сайт креатора. Пользова
 - [ ] Какой payment provider (TBD; закладывать pluggable checkout + webhooks/callbacks)  
 - [ ] Правила password (min length и т.д.)  
 - [ ] Soft banner «confirm your email» — в MVP или later  
+- [ ] Финальный legal-текст Terms & Conditions (+ Privacy Policy отдельно — если нужна, TBD)  
+- [ ] Нужна ли повторная фиксация согласия с Terms при Subscribe (в MVP достаточно при Register)  
 
 ---
 
 ## 10. Definition of Done (user MVP)
 
-Гость на валидном домене креатора может: зарегистрироваться (email + password), залогиниться, опционально подтвердить email позже без блокировок, оформить один subscription plan через payment provider, видеть premium в Feed, писать в Messages с учётом credits, докупать chat packs, unlock paid photos в чате, видеть корректные balances и статус subscription, управлять / отменять подписку через flow провайдера и связаться с поддержкой по email.
+Гость на валидном домене креатора может: зарегистрироваться (email + password), залогиниться, опционально подтвердить email позже без блокировок, оформить один subscription plan через payment provider, видеть premium в Feed, писать в Messages с учётом credits, докупать chat packs, unlock paid photos в чате, видеть корректные balances и статус subscription, управлять / отменять подписку через flow провайдера, ознакомиться с Terms & Conditions, принять их при Register и связаться с поддержкой по email.
 
 **В этот документ и эту оценку не входят** Creator cabinet и Platform Admin.
