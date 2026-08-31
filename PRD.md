@@ -11,6 +11,45 @@
 
 ---
 
+## Overview — Pages & functionality
+
+### Pages
+
+| Page | Route |
+|------|-------|
+| Landing | `/` |
+| Register | `/register` |
+| Login | `/login` |
+| Email confirm | `/auth/confirm` |
+| Subscribe | `/subscribe` |
+| Feed | `/feed` |
+| Messages | `/messages` |
+| Conversation | `/messages/[id]` |
+| Billing | `/billing` |
+| Contact | `/contact` |
+| Terms & Conditions | `/terms` |
+
+### Functionality
+
+- Register / Login (email + password)
+- Email confirmation (optional)
+- Session / Log out
+- Landing только для guests (logged-in → Feed)
+- Feed: free + premium (blur без subscription)
+- Subscribe: один plan, fixed price, payment provider
+- Messages: 1:1 чат с креатором
+- Credits за исходящие сообщения
+- Paid photos in chat (unlock за credits)
+- Chat packs (покупка доп. credits)
+- Billing: статус subscription + балансы
+- Manage / Cancel subscription
+- Terms & Conditions + согласие при Register
+- Contact (mailto)
+
+*Ниже — детальная спецификация для оценки.*
+
+---
+
 ## Контекст продукта
 
 White-label персональный сайт креатора. Пользователь заходит на branded-домен, регистрируется / логинится, смотрит free и premium контент, оформляет subscription, пишет креатору в Messages и управляет credits.
