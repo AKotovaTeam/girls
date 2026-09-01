@@ -6,7 +6,7 @@
 | **Аудитория** | Product, Tech — оценка и планирование MVP |
 | **Scope** | Только end-user (подписчик) на домене креатора |
 | **Out of scope** | Creator cabinet, Platform Admin, Creator API |
-| **Версия** | 1.2 |
+| **Версия** | 1.3 |
 | **Статус** | Draft for estimation |
 
 ---
@@ -35,7 +35,7 @@
 - Email confirmation (optional)
 - Session / Log out
 - Landing только для guests (logged-in → Feed)
-- Feed: free + premium (blur без subscription)
+- Feed: free + premium (blur без subscription); **только 20 последних posts**
 - Subscribe: один plan, fixed price, payment provider (+ email confirmation оплаты)
 - Messages: 1:1 чат с креатором
 - При новом сообщении от креатора: unread badge + email пользователю
@@ -277,7 +277,7 @@ White-label персональный сайт креатора. Пользова
 
 **User sees:**
 
-- Список опубликованных posts (хронология или иной product order)
+- Список опубликованных posts — **только 20 последних** (новые сверху; старше не показываются)
 - У поста: креатор, дата, title/body, image(s)
 - **Free posts:** полный текст и фото
 - **Premium posts** (нужна subscription):
@@ -288,13 +288,18 @@ White-label персональный сайт креатора. Пользова
 
 **User can:**
 
-- Скроллить Feed
+- Скроллить Feed (в пределах 20 posts)
 - Уйти в Subscribe с locked posts
 - Перейти в Messages / Billing через Header
 
-**Out of MVP:** likes, comments, search, filters, download vault
+**Rules:**
 
-**Acceptance:** Auth-gated Feed; free vs premium; blur + CTA; gallery для multi-image; desktop + mobile
+- В ленте отображаются **не более 20** последних опубликованных posts
+- Pagination / «Load more» / archive старых posts — **out of MVP**
+
+**Out of MVP:** likes, comments, search, filters, download vault, просмотр posts старше 20-го
+
+**Acceptance:** Auth-gated Feed; лимит 20 posts; free vs premium; blur + CTA; gallery для multi-image; desktop + mobile
 
 ---
 
@@ -520,6 +525,7 @@ White-label персональный сайт креатора. Пользова
 | R4 | Email confirmation optional — unverified имеют полный MVP-доступ |
 | R5 | One subscription plan, fixed price |
 | R6 | Premium posts только при active subscription |
+| R6a | Feed показывает **только 20 последних** опубликованных posts |
 | R7 | Send message требует active subscription |
 | R8 | Text message = 1 credit |
 | R9 | Входящие от креатора = 0 credits |
@@ -547,7 +553,7 @@ White-label персональный сайт креатора. Пользова
 | Login | Empty, validation, wrong credentials, success, return URL |
 | Confirm email | Success, invalid, expired, already confirmed |
 | Subscribe | Guest redirect, ready, checkout redirect, cancelled return |
-| Feed | Empty, free, locked premium, unlocked premium, optional confirm banner |
+| Feed | Empty, free, locked premium, unlocked premium, **max 20 posts**, optional confirm banner |
 | Chat | No subscription, no credits, empty thread, sending, send error, paid photo locked/unlocked |
 | Billing | Not subscribed, active, packs list, purchase success/fail, manage flow |
 
@@ -561,7 +567,7 @@ White-label персональный сайт креатора. Пользова
 - Register + Login (email + password)
 - Session + Log out
 - Email confirmation send + confirm page (**non-blocking**)
-- Feed: free / premium + blur
+- Feed: free / premium + blur; **лимит 20 последних posts**
 - Subscribe через payment provider — one plan
 - Billing: status, credits, покупка chat packs
 - Messages: 1:1 text, credit spend, paid photo unlock; **входящее → badge + email**
@@ -608,6 +614,6 @@ White-label персональный сайт креатора. Пользова
 
 ## 10. Definition of Done (user MVP)
 
-Гость на валидном домене креатора может: зарегистрироваться (email + password), залогиниться, опционально подтвердить email позже без блокировок, оформить один subscription plan через payment provider (с email confirmation оплаты), видеть premium в Feed, писать в Messages с учётом credits, получать ответы креатора в thread с unread badge и email, докупать chat packs (с email confirmation), unlock paid photos в чате, видеть корректные balances и статус subscription, получать email при cancel / fail, управлять / отменять подписку через flow провайдера, ознакомиться с Terms & Conditions, принять их при Register и связаться с поддержкой по email.
+Гость на валидном домене креатора может: зарегистрироваться (email + password), залогиниться, опционально подтвердить email позже без блокировок, оформить один subscription plan через payment provider (с email confirmation оплаты), видеть **до 20 последних posts** в Feed (free и premium по правилам подписки), писать в Messages с учётом credits, получать ответы креатора в thread с unread badge и email, докупать chat packs (с email confirmation), unlock paid photos в чате, видеть корректные balances и статус subscription, получать email при cancel / fail, управлять / отменять подписку через flow провайдера, ознакомиться с Terms & Conditions, принять их при Register и связаться с поддержкой по email.
 
 **В этот документ и эту оценку не входят** Creator cabinet и Platform Admin.
